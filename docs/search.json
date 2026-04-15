@@ -1,0 +1,163 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Zhuojin Li Chris",
+    "section": "",
+    "text": "Welcome to my website!\nI am a student at UC San Diego interested in data science, machine learning, causal inference, and business analytics."
+  },
+  {
+    "objectID": "index.html#research-interests",
+    "href": "index.html#research-interests",
+    "title": "Zhuojin Li Chris",
+    "section": "Research Interests",
+    "text": "Research Interests\n\nMachine Learning\nUplift Modeling\nCausal Inference\nData Analysis\nBusiness Analytics"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Zhuojin Li Chris",
+    "section": "Education",
+    "text": "Education\nUniversity of California, San Diego Your degree / major here Expected graduation: 20XX"
+  },
+  {
+    "objectID": "index.html#selected-work",
+    "href": "index.html#selected-work",
+    "title": "Zhuojin Li Chris",
+    "section": "Selected Work",
+    "text": "Selected Work\nI use this site to share my academic background, project portfolio, and technical work."
+  },
+  {
+    "objectID": "abtest.html",
+    "href": "abtest.html",
+    "title": "A/B Testing a Call to Action",
+    "section": "",
+    "text": "When someone lands on a website, even a small change in wording can affect whether they take action. Suppose my homepage includes a place where visitors can sign up for a newsletter, and I want to know which message encourages more sign-ups. I will compare two possible calls to action:\n\nCTA A: “Sign up for our newsletter here!”\nCTA B: “Stay up to date by signing up!”\n\nA standard way to evaluate this kind of design choice is an A/B test. Visitors are randomly assigned to see one of the two versions, and then I compare the sign-up rates across the two groups. Random assignment matters because it helps make the groups comparable, so any systematic difference in outcomes can be attributed to the CTA rather than to differences in the visitors themselves.\nIn this post, I use a simulated A/B test to explain several core ideas from classical frequentist statistics: the law of large numbers, bootstrap standard errors, the central limit theorem, hypothesis testing, the regression interpretation of a two-sample test, and why “peeking” at results can create misleading findings."
+  },
+  {
+    "objectID": "abtest.html#introduction",
+    "href": "abtest.html#introduction",
+    "title": "A/B Testing a Call to Action",
+    "section": "",
+    "text": "When someone lands on a website, even a small change in wording can affect whether they take action. Suppose my homepage includes a place where visitors can sign up for a newsletter, and I want to know which message encourages more sign-ups. I will compare two possible calls to action:\n\nCTA A: “Sign up for our newsletter here!”\nCTA B: “Stay up to date by signing up!”\n\nA standard way to evaluate this kind of design choice is an A/B test. Visitors are randomly assigned to see one of the two versions, and then I compare the sign-up rates across the two groups. Random assignment matters because it helps make the groups comparable, so any systematic difference in outcomes can be attributed to the CTA rather than to differences in the visitors themselves.\nIn this post, I use a simulated A/B test to explain several core ideas from classical frequentist statistics: the law of large numbers, bootstrap standard errors, the central limit theorem, hypothesis testing, the regression interpretation of a two-sample test, and why “peeking” at results can create misleading findings."
+  },
+  {
+    "objectID": "abtest.html#the-ab-test-as-a-statistical-problem",
+    "href": "abtest.html#the-ab-test-as-a-statistical-problem",
+    "title": "A/B Testing a Call to Action",
+    "section": "The A/B Test as a Statistical Problem",
+    "text": "The A/B Test as a Statistical Problem\nEach visitor either signs up or does not sign up, so each individual outcome can be modeled as a Bernoulli random variable. If a visitor sees CTA A, their sign-up probability is \\(\\pi_A\\). If a visitor sees CTA B, their sign-up probability is \\(\\pi_B\\).\nThat means each observation is either:\n\n\\(1\\) if the visitor signs up\n\\(0\\) if the visitor does not sign up\n\nThe parameter I care about is the difference in sign-up rates:\n\\[\n\\theta = \\pi_A - \\pi_B\n\\]\nIf \\(\\theta &gt; 0\\), CTA A performs better. If \\(\\theta &lt; 0\\), CTA B performs better. If \\(\\theta = 0\\), the two CTAs perform equally well.\nA natural estimator for this quantity is the difference in sample means:\n\\[\n\\hat{\\theta} = \\bar{X}_A - \\bar{X}_B\n\\]\nBecause the data are binary, each sample mean is just a sample proportion. So \\(\\bar{X}_A = \\hat{\\pi}_A\\) and \\(\\bar{X}_B = \\hat{\\pi}_B\\)."
+  },
+  {
+    "objectID": "abtest.html#simulating-data",
+    "href": "abtest.html#simulating-data",
+    "title": "A/B Testing a Call to Action",
+    "section": "Simulating Data",
+    "text": "Simulating Data\nIn a real A/B test, we would not know the true values of \\(\\pi_A\\) and \\(\\pi_B\\). We would only observe data and try to infer the underlying sign-up rates. For this exercise, though, it is useful to set the truth ourselves so that we can study how our estimator behaves when we know the answer in advance.\nI will assume:\n\n\\(\\pi_A = 0.22\\)\n\\(\\pi_B = 0.18\\)\n\nSo the true difference is:\n\\[\n\\theta = 0.22 - 0.18 = 0.04\n\\]\nThe next chunk simulates 1,000 visitors in each group.\n\nn_A = 1000\nn_B = 1000\npi_A = 0.22\npi_B = 0.18\ntheta_true = pi_A - pi_B\n\nA = np.random.binomial(1, pi_A, n_A)\nB = np.random.binomial(1, pi_B, n_B)\n\ndf = pd.DataFrame({\n    \"group\": [\"A\"] * n_A + [\"B\"] * n_B,\n    \"signup\": np.concatenate([A, B])\n})\n\nsummary_table = pd.DataFrame({\n    \"Group\": [\"A\", \"B\"],\n    \"Sample size\": [n_A, n_B],\n    \"True signup rate\": [pi_A, pi_B],\n    \"Observed signup rate\": [A.mean(), B.mean()]\n})\n\nsummary_table[\"True signup rate\"] = summary_table[\"True signup rate\"].map(lambda x: f\"{x:.3f}\")\nsummary_table[\"Observed signup rate\"] = summary_table[\"Observed signup rate\"].map(lambda x: f\"{x:.3f}\")\n\nsummary_table\n\n\n\n\n\n\n\n\nGroup\nSample size\nTrue signup rate\nObserved signup rate\n\n\n\n\n0\nA\n1000\n0.220\n0.202\n\n\n1\nB\n1000\n0.180\n0.176\n\n\n\n\n\n\n\nEven though the true rates are 0.22 and 0.18, the observed proportions in any one sample will usually not match those values exactly. That sampling variation is the main reason statistical inference is necessary."
+  },
+  {
+    "objectID": "abtest.html#the-law-of-large-numbers",
+    "href": "abtest.html#the-law-of-large-numbers",
+    "title": "A/B Testing a Call to Action",
+    "section": "The Law of Large Numbers",
+    "text": "The Law of Large Numbers\nThe Law of Large Numbers (LLN) says that as the sample size grows, the sample mean converges to the population mean. In this setting, that means the average outcome in group A should get closer to \\(\\pi_A\\), the average outcome in group B should get closer to \\(\\pi_B\\), and therefore the difference in sample means \\(\\hat{\\theta}\\) should get closer to the true difference \\(\\theta\\) as we collect more data.\nTo make this concrete, I compute the element-wise differences between the simulated A and B outcomes, then track the cumulative average of those differences.\n\ndiffs = A - B\nrunning_mean = np.cumsum(diffs) / np.arange(1, len(diffs) + 1)\n\n\n\n\n\n\nRunning average of the difference in outcomes between CTA A and CTA B.\n\n\n\n\nAt the beginning of the sample, the cumulative average jumps around a lot because each new observation has a large influence on the overall mean. As more observations accumulate, those random fluctuations become less important and the running mean settles down near the true value of 0.04. That is the practical value of the law of large numbers: it explains why larger experiments produce more stable estimates."
+  },
+  {
+    "objectID": "abtest.html#bootstrap-standard-errors",
+    "href": "abtest.html#bootstrap-standard-errors",
+    "title": "A/B Testing a Call to Action",
+    "section": "Bootstrap Standard Errors",
+    "text": "Bootstrap Standard Errors\nOnce we have a point estimate, the next question is how much uncertainty surrounds it. A point estimate alone does not tell us whether the observed difference is precise or noisy.\nOne flexible way to measure precision is the bootstrap. The idea is simple: repeatedly resample with replacement from the observed data, recompute the statistic on each resample, and use the spread of those resampled statistics to estimate the standard error.\nHere I generate 1,000 bootstrap resamples for each group and compute a bootstrapped estimate of \\(\\theta\\) for each one.\n\ntheta_hat = A.mean() - B.mean()\n\nn_boot = 1000\nboot_thetas = np.empty(n_boot)\n\nfor i in range(n_boot):\n    A_star = np.random.choice(A, size=n_A, replace=True)\n    B_star = np.random.choice(B, size=n_B, replace=True)\n    boot_thetas[i] = A_star.mean() - B_star.mean()\n\nboot_se = boot_thetas.std(ddof=1)\n\npi_hat_A = A.mean()\npi_hat_B = B.mean()\n\nanalytic_se = np.sqrt(\n    pi_hat_A * (1 - pi_hat_A) / n_A +\n    pi_hat_B * (1 - pi_hat_B) / n_B\n)\n\nci_lower = theta_hat - 1.96 * boot_se\nci_upper = theta_hat + 1.96 * boot_se\n\nbootstrap_results = pd.DataFrame({\n    \"Quantity\": [\n        \"Estimated difference (theta_hat)\",\n        \"Bootstrap standard error\",\n        \"Analytical standard error\",\n        \"95% CI lower bound\",\n        \"95% CI upper bound\"\n    ],\n    \"Value\": [theta_hat, boot_se, analytic_se, ci_lower, ci_upper]\n})\n\nbootstrap_results[\"Value\"] = bootstrap_results[\"Value\"].map(lambda x: f\"{x:.4f}\")\nbootstrap_results\n\n\n\n\n\n\n\n\nQuantity\nValue\n\n\n\n\n0\nEstimated difference (theta_hat)\n0.0260\n\n\n1\nBootstrap standard error\n0.0175\n\n\n2\nAnalytical standard error\n0.0175\n\n\n3\n95% CI lower bound\n-0.0083\n\n\n4\n95% CI upper bound\n0.0603\n\n\n\n\n\n\n\n\n\n\n\n\nBootstrap distribution of the estimated treatment effect.\n\n\n\n\nThe bootstrap standard error and the analytical standard error should be very close, and in this simulation they usually are. That is reassuring because it tells us that the resampling approach is capturing the same uncertainty that the closed-form Bernoulli formula does.\nUsing the bootstrap standard error, I construct a 95% confidence interval as \\(\\hat{\\theta} \\pm 1.96 \\times SE_{boot}\\). Interpreted informally, this interval gives a plausible range of values for the true difference in sign-up rates. If the interval excludes zero, that suggests the data are more consistent with a real CTA effect than with no difference at all."
+  },
+  {
+    "objectID": "abtest.html#the-central-limit-theorem",
+    "href": "abtest.html#the-central-limit-theorem",
+    "title": "A/B Testing a Call to Action",
+    "section": "The Central Limit Theorem",
+    "text": "The Central Limit Theorem\nThe Central Limit Theorem (CLT) says that, under broad conditions, the sampling distribution of a sample mean becomes approximately Normal as the sample size grows. Because my estimator is the difference of two sample means, the same idea applies here: even though the underlying data are Bernoulli rather than Normal, the distribution of \\(\\hat{\\theta}\\) becomes increasingly bell-shaped when the sample size is large.\nTo illustrate that, I simulate the estimator 1,000 times at four different sample sizes.\n\nsample_sizes = [25, 50, 100, 500]\nclt_results = {}\n\nfor n in sample_sizes:\n    estimates = np.empty(1000)\n    for i in range(1000):\n        A_n = np.random.binomial(1, pi_A, n)\n        B_n = np.random.binomial(1, pi_B, n)\n        estimates[i] = A_n.mean() - B_n.mean()\n    clt_results[n] = estimates\n\n\n\n\n\n\nSampling distribution of the difference in sample means at different sample sizes.\n\n\n\n\nWith only 25 observations per group, the histogram is still fairly rough and discrete-looking. By the time the sample size reaches 100 or 500 per group, the distribution is much smoother and more symmetric. This is exactly the pattern predicted by the CLT. The theorem is important because it justifies using Normal-based confidence intervals and hypothesis tests in large samples, even when the raw data are binary."
+  },
+  {
+    "objectID": "abtest.html#hypothesis-testing",
+    "href": "abtest.html#hypothesis-testing",
+    "title": "A/B Testing a Call to Action",
+    "section": "Hypothesis Testing",
+    "text": "Hypothesis Testing\nA hypothesis test starts by specifying a null hypothesis and an alternative hypothesis. Here the natural null is:\n\\[\nH_0: \\theta = 0\n\\]\nwhich says that the two CTAs have the same sign-up rate. The alternative is:\n\\[\nH_1: \\theta \\neq 0\n\\]\nwhich says that the CTAs differ.\nTo test this, I standardize the observed estimate:\n\\[\nz = \\frac{\\hat{\\theta} - 0}{SE(\\hat{\\theta})}\n\\]\nWhy do this? Because the CLT tells us that for large samples, \\(\\hat{\\theta}\\) is approximately Normal. Under the null, its mean is 0. Dividing by its standard error puts the statistic onto the standard Normal scale. Once that is done, I can compute a p-value using the familiar \\(N(0,1)\\) distribution.\nThis is often loosely called a “t-test,” but that label is not quite exact here. The classical t-test comes from Normal data with an estimated variance, which produces an exact t-distribution. In this setting, the observations are Bernoulli rather than Normal, so the CLT gives us only an approximate Normal result. In large samples, though, the standard Normal and the t-distribution are so similar that the practical difference is usually small.\n\nz_stat = theta_hat / analytic_se\np_value = 2 * (1 - norm.cdf(abs(z_stat)))\n\nhypothesis_results = pd.DataFrame({\n    \"Statistic\": [\"Estimated difference\", \"Standard error\", \"z statistic\", \"Two-sided p-value\"],\n    \"Value\": [theta_hat, analytic_se, z_stat, p_value]\n})\n\nhypothesis_results[\"Value\"] = hypothesis_results[\"Value\"].map(lambda x: f\"{x:.4f}\")\nhypothesis_results\n\n\n\n\n\n\n\n\nStatistic\nValue\n\n\n\n\n0\nEstimated difference\n0.0260\n\n\n1\nStandard error\n0.0175\n\n\n2\nz statistic\n1.4858\n\n\n3\nTwo-sided p-value\n0.1373\n\n\n\n\n\n\n\nIf the p-value is below a threshold such as 0.05, I reject the null hypothesis and conclude that the two CTAs likely differ in performance. If it is larger, then the observed difference is not strong enough to rule out ordinary sampling variation."
+  },
+  {
+    "objectID": "abtest.html#the-t-test-as-a-regression",
+    "href": "abtest.html#the-t-test-as-a-regression",
+    "title": "A/B Testing a Call to Action",
+    "section": "The T-Test as a Regression",
+    "text": "The T-Test as a Regression\nThe same comparison can also be written as a regression. Stack the observations into one dataset and define:\n\n\\(Y_i = 1\\) if visitor \\(i\\) signs up, and \\(0\\) otherwise\n\\(D_i = 1\\) if visitor \\(i\\) sees CTA A, and \\(0\\) if visitor \\(i\\) sees CTA B\n\nThen fit:\n\\[\nY_i = \\beta_0 + \\beta_1 D_i + \\varepsilon_i\n\\]\nThis regression has a very intuitive interpretation:\n\n\\(\\beta_0\\) is the mean of group B, so it estimates \\(\\pi_B\\)\n\\(\\beta_0 + \\beta_1\\) is the mean of group A, so it estimates \\(\\pi_A\\)\nTherefore \\(\\beta_1 = \\pi_A - \\pi_B = \\theta\\)\n\nSo the coefficient on the treatment indicator should match the difference in sample means from the earlier sections.\n\ndf_reg = df.copy()\ndf_reg[\"D\"] = (df_reg[\"group\"] == \"A\").astype(int)\n\nX = sm.add_constant(df_reg[\"D\"])\nmodel = sm.OLS(df_reg[\"signup\"], X).fit()\n\nbeta1 = model.params[\"D\"]\nbeta1_se = model.bse[\"D\"]\nbeta1_t = model.tvalues[\"D\"]\nbeta1_p = model.pvalues[\"D\"]\n\nregression_results = pd.DataFrame({\n    \"Quantity\": [\"beta_1 estimate\", \"Standard error\", \"t statistic\", \"p-value\"],\n    \"Regression\": [beta1, beta1_se, beta1_t, beta1_p],\n    \"Two-sample approach\": [theta_hat, analytic_se, z_stat, p_value]\n})\n\nregression_results[\"Regression\"] = regression_results[\"Regression\"].map(lambda x: f\"{x:.4f}\")\nregression_results[\"Two-sample approach\"] = regression_results[\"Two-sample approach\"].map(lambda x: f\"{x:.4f}\")\nregression_results\n\n\n\n\n\n\n\n\nQuantity\nRegression\nTwo-sample approach\n\n\n\n\n0\nbeta_1 estimate\n0.0260\n0.0260\n\n\n1\nStandard error\n0.0175\n0.0175\n\n\n2\nt statistic\n1.4850\n1.4858\n\n\n3\np-value\n0.1377\n0.1373\n\n\n\n\n\n\n\nThe coefficient estimate is numerically the same as the difference in means, as expected. The test statistics and p-values are also nearly identical. This equivalence matters because it shows that regression is not a completely different tool. In simple experiments, it is just another way to express the same comparison. More importantly, regression scales naturally: if I want to add controls, interactions, or multiple treatment arms later, I can do so within the same framework."
+  },
+  {
+    "objectID": "abtest.html#the-problem-with-peeking",
+    "href": "abtest.html#the-problem-with-peeking",
+    "title": "A/B Testing a Call to Action",
+    "section": "The Problem with Peeking",
+    "text": "The Problem with Peeking\nNow suppose my boss is impatient and wants to peek at the results every time another 100 visitors per group have been observed. That means testing after 100, 200, 300, …, up to 1,000 observations per group. If any one of those tests is significant at the 0.05 level, she wants to stop early and declare a winner.\nThis is a problem under classical frequentist inference. A single hypothesis test at \\(\\alpha = 0.05\\) has a 5% chance of a false positive when the null is true. But repeated looks at accumulating data create repeated opportunities to get “lucky” noise. The overall probability of seeing at least one statistically significant result becomes much larger than 5%.\nTo show that, I simulate a world where the null is true: \\(\\pi_A = \\pi_B = 0.20\\).\n\nnp.random.seed(496)\n\nn_total = 1000\npeek_points = np.arange(100, 1001, 100)\nn_experiments = 10000\npi_null = 0.20\n\nany_sig = np.zeros(n_experiments, dtype=bool)\n\nfor exp in range(n_experiments):\n    A_null = np.random.binomial(1, pi_null, n_total)\n    B_null = np.random.binomial(1, pi_null, n_total)\n\n    sig_found = False\n\n    for n in peek_points:\n        A_n = A_null[:n]\n        B_n = B_null[:n]\n\n        theta_n = A_n.mean() - B_n.mean()\n        se_n = np.sqrt(\n            A_n.mean() * (1 - A_n.mean()) / n +\n            B_n.mean() * (1 - B_n.mean()) / n\n        )\n\n        if se_n == 0:\n            continue\n\n        z_n = theta_n / se_n\n        p_n = 2 * (1 - norm.cdf(abs(z_n)))\n\n        if p_n &lt; 0.05:\n            sig_found = True\n            break\n\n    any_sig[exp] = sig_found\n\nfalse_positive_rate = any_sig.mean()\n\npeeking_results = pd.DataFrame({\n    \"Procedure\": [\"Single test at n = 1000\", \"Peeking every 100 observations\"],\n    \"False positive rate\": [0.05, false_positive_rate]\n})\n\npeeking_results[\"False positive rate\"] = peeking_results[\"False positive rate\"].map(lambda x: f\"{x:.4f}\")\npeeking_results\n\n\n\n\n\n\n\n\nProcedure\nFalse positive rate\n\n\n\n\n0\nSingle test at n = 1000\n0.0500\n\n\n1\nPeeking every 100 observations\n0.2014\n\n\n\n\n\n\n\n\n\n\n\n\nFalse positive rate under a single test versus repeated peeking.\n\n\n\n\nThe simulation usually shows that the false positive rate under repeated peeking is much larger than 0.05. In other words, if I repeatedly check the data and stop whenever I happen to cross the significance threshold, I dramatically increase my chance of falsely declaring a winner.\nThat is why A/B tests need a pre-specified stopping rule or a formal sequential testing procedure. Without one, “significance” can become a product of impatience rather than evidence."
+  },
+  {
+    "objectID": "abtest.html#conclusion",
+    "href": "abtest.html#conclusion",
+    "title": "A/B Testing a Call to Action",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis A/B testing example ties together several foundational ideas in frequentist statistics.\n\nThe Law of Large Numbers explains why the difference in sample means stabilizes as the experiment grows.\nThe bootstrap provides a practical way to estimate uncertainty.\nThe Central Limit Theorem justifies Normal-based inference for large samples.\nHypothesis testing turns the estimate into a formal decision rule.\nThe same comparison can be expressed as a regression, showing how experimental analysis fits into a broader modeling framework.\nFinally, peeking demonstrates that statistical procedures depend not just on formulas, but also on disciplined experimental design.\n\nEven in a simple A/B test, the language of classical statistics gives us a rigorous way to reason about evidence, uncertainty, and decision-making."
+  },
+  {
+    "objectID": "slides.html",
+    "href": "slides.html",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "",
+    "text": "China has struggled to qualify for the FIFA World Cup in recent years.\n\nLast appearance: 2002 World Cup\nStrong competition in Asia (Japan, Korea, Iran)\nNeed for long-term development\n\n\n\n\nYouth training system\nCoaching quality\nInternational experience"
+  },
+  {
+    "objectID": "slides.html#current-situation",
+    "href": "slides.html#current-situation",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "",
+    "text": "China has struggled to qualify for the FIFA World Cup in recent years.\n\nLast appearance: 2002 World Cup\nStrong competition in Asia (Japan, Korea, Iran)\nNeed for long-term development\n\n\n\n\nYouth training system\nCoaching quality\nInternational experience"
+  },
+  {
+    "objectID": "slides.html#future-outlook",
+    "href": "slides.html#future-outlook",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "Future Outlook 🔍",
+    "text": "Future Outlook 🔍\nChina is investing more in football development.\n\nMore youth academies\nGovernment support for sports\nIncreasing popularity of football\n\n\nPossible Timeline\n\nShort term (2026): Low probability\nMedium term (2030): Possible qualification\nLong term (2034+): More realistic"
+  },
+  {
+    "objectID": "slides.html#my-prediction",
+    "href": "slides.html#my-prediction",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "My Prediction 🏆",
+    "text": "My Prediction 🏆\nChina could qualify for the World Cup around 2030–2034.\n\nReasons\n\nImproved youth development\nMore exposure to international competition\nGradual improvement in league quality\n\n\n\nConclusion\nWith consistent effort and investment, China has the potential to return to the World Cup stage in the next decade."
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
+    "section": "",
+    "text": "{{&lt; pdf files/resume.pdf width=100% height=800 &gt;}}"
+  },
+  {
+    "objectID": "hobbies.html",
+    "href": "hobbies.html",
+    "title": "Hobbies",
+    "section": "",
+    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team.\n\n\n\n\n\nGym 🏋️\nWatching sports 📺\nTraveling 🌍"
+  },
+  {
+    "objectID": "hobbies.html#soccer",
+    "href": "hobbies.html#soccer",
+    "title": "Hobbies",
+    "section": "",
+    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team."
+  },
+  {
+    "objectID": "hobbies.html#other-interests",
+    "href": "hobbies.html#other-interests",
+    "title": "Hobbies",
+    "section": "",
+    "text": "Gym 🏋️\nWatching sports 📺\nTraveling 🌍"
+  }
+]
