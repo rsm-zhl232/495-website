@@ -1,6 +1,5 @@
 project:
   type: website
-  output-dir: docs
 
 website:
   title: "Zhuojin-Li_website"
@@ -14,7 +13,7 @@ website:
         text: Hobbies
       - href: slides.qmd
         text: My pre
-      - href: ab-test.qmd
+      - href: abtest.qmd
         text: AB test
 
 format:
