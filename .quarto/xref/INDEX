@@ -1,0 +1,17 @@
+{
+  "index.qmd": {
+    "index.html": "372d848e"
+  },
+  "resume.qmd": {
+    "resume.html": "bd1ccfd0"
+  },
+  "hobbies.qmd": {
+    "hobbies.html": "7b7256ab"
+  },
+  "slides.qmd": {
+    "slides.html": "c08c8b2a"
+  },
+  "abtest.qmd": {
+    "abtest.html": "b2aa03e4"
+  }
+}

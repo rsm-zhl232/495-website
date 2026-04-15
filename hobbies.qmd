@@ -1,0 +1,17 @@
+---
+title: "Hobbies"
+---
+
+# My Hobbies ⚽
+
+## Soccer
+
+I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team.
+
+![](soccer1.JPG)
+
+## Other Interests
+
+- Gym 🏋️
+- Watching sports 📺
+- Traveling 🌍

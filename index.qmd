@@ -1,0 +1,35 @@
+---
+title: "Zhuojin Li Chris"
+image: "zhengjianzhao.jpg"
+about:
+  template: jolla
+  links:
+    - icon: envelope
+      href: mailto:zhl232@ucsd.edu
+    - icon: linkedin
+      href: https://www.linkedin.com/in/your_username
+    - icon: github
+      href: https://github.com/your_username
+---
+
+Welcome to my website!
+
+I am a student at **UC San Diego** interested in **data science, machine learning, causal inference, and business analytics**.
+
+## Research Interests
+
+- Machine Learning
+- Uplift Modeling
+- Causal Inference
+- Data Analysis
+- Business Analytics
+
+## Education
+
+**University of California, San Diego**
+Your degree / major here
+Expected graduation: 20XX
+
+## Selected Work
+
+I use this site to share my academic background, project portfolio, and technical work.

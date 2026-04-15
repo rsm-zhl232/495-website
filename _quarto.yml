@@ -1,0 +1,23 @@
+project:
+  type: website
+
+website:
+  title: "Zhuojin-Li_website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: resume.qmd
+        text: Resume
+      - href: hobbies.qmd
+        text: Hobbies
+      - href: slides.qmd
+        text: My pre
+      - href: ab-test.qmd
+        text: AB test
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
