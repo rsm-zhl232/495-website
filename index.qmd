@@ -32,4 +32,4 @@ Expected graduation: 20XX
 
 ## Selected Work
 
-I use this site to share my academic background, project portfolio, and technical work.
+I use this site to share my academic background, project portfolio and technical work.
