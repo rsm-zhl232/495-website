@@ -16,6 +16,8 @@ website:
         text: My pre
       - href: abtest.qmd
         text: AB test
+      - href: hw2-card.qmd
+        text: HW2 Blog
 
 format:
   html:

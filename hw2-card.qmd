@@ -1,0 +1,298 @@
+---
+title: "Replicating Card and Krueger (1994)"
+subtitle: "Minimum Wages and Employment in New Jersey and Pennsylvania"
+author: "Zhuojin Li Chris"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: false
+    number-sections: false
+jupyter: python3
+---
+
+```{python}
+#| label: setup
+#| include: false
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+plt.style.use("ggplot")
+pd.set_option("display.precision", 3)
+```
+
+## Introduction
+
+Do minimum wages reduce employment? This is one of the most famous questions in labor economics. Card and Krueger's 1994 paper studies this question by comparing fast-food restaurants in New Jersey and eastern Pennsylvania around New Jersey's 1992 minimum wage increase. Their empirical strategy is simple and powerful: New Jersey serves as the treated group, Pennsylvania serves as the comparison group, and employment is measured both before and after the policy change. The paper's headline result is that employment did not fall in New Jersey relative to Pennsylvania after the minimum wage increased. In fact, their key difference-in-differences estimate is about 2.76 full-time-equivalent workers.
+This paper matters because it challenged the standard textbook prediction that raising the minimum wage must reduce employment. Using establishment-level data from 410 restaurants, Card and Krueger instead find no indication that the higher minimum wage reduced employment in this setting.
+
+In this post, I do three things. First, I briefly explain the research design. Second, I replicate the paper's main difference-in-differences result from Table 3. Third, I extend the analysis by presenting the result visually and estimating a regression version of the same design.
+
+## Research Design
+
+The policy change is straightforward. On April 1, 1992, New Jersey increased its minimum wage from \$4.25 to \$5.05, while Pennsylvania did not change its minimum wage at that time. Card and Krueger surveyed fast-food restaurants in both states before and after the increase.
+
+That creates a natural treatment-control setup:
+
+- **Treatment group:** fast-food restaurants in New Jersey
+- **Control group:** fast-food restaurants in eastern Pennsylvania
+- **Before period:** first-wave survey
+- **After period:** second-wave survey
+
+The key outcome is full-time-equivalent employment, or FTE. In the paper, FTE employment is defined as the number of full-time workers plus managers plus one-half the number of part-time workers.
+
+The core estimator is the difference-in-differences:
+
+$$
+\text{DID} = (\bar{Y}_{NJ,after} - \bar{Y}_{NJ,before}) - (\bar{Y}_{PA,after} - \bar{Y}_{PA,before})
+$$
+
+This compares the change in employment in New Jersey to the change in employment in Pennsylvania, removing broader forces that affect both states.
+
+## Loading and Preparing the Data
+
+The public dataset is distributed as a flat file, so I reconstruct the variables using the definitions provided in the accompanying SAS check program. I hide the data-cleaning code here because it is useful for replication but not especially informative for a reader.
+
+```{python}
+#| label: load-data
+#| echo: false
+
+df = pd.read_csv("data/public.dat", sep=r"\s+", header=None, engine="python")
+
+df.columns = [
+    "sheet",
+    "chainr",
+    "co_owned",
+    "stater",
+    "southj",
+    "centralj",
+    "northj",
+    "pa1",
+    "pa2",
+    "shore",
+    "ncalls",
+    "empft",
+    "emppt",
+    "nmgrs",
+    "wage_st",
+    "inctime",
+    "firstinc",
+    "bonus",
+    "pctaff",
+    "meal",
+    "open",
+    "hrsopen",
+    "psoda",
+    "pfry",
+    "pentree",
+    "nregs",
+    "nregs11",
+    "type2",
+    "status2",
+    "date2",
+    "ncalls2",
+    "empft2",
+    "emppt2",
+    "nmgrs2",
+    "wage_st2",
+    "inctime2",
+    "firstin2",
+    "special2",
+    "meals2",
+    "open2r",
+    "hrsopen2",
+    "psoda2",
+    "pfry2",
+    "pentree2",
+    "nregs2",
+    "nregs112",
+]
+
+df = df.replace(".", np.nan)
+
+for c in df.columns:
+    df[c] = pd.to_numeric(df[c], errors="coerce")
+
+df["emptot"] = df["emppt"] * 0.5 + df["empft"] + df["nmgrs"]
+df["emptot2"] = df["emppt2"] * 0.5 + df["empft2"] + df["nmgrs2"]
+df["demp"] = df["emptot2"] - df["emptot"]
+
+df["pchempc"] = 2 * (df["emptot2"] - df["emptot"]) / (df["emptot2"] + df["emptot"])
+df.loc[df["emptot2"] == 0, "pchempc"] = -1
+
+df["gap"] = np.where(
+    df["stater"] == 0,
+    0,
+    np.where(
+        df["wage_st"] >= 5.05,
+        0,
+        np.where(df["wage_st"] > 0, (5.05 - df["wage_st"]) / df["wage_st"], np.nan),
+    ),
+)
+
+df["nj"] = df["stater"]
+df["bk"] = (df["chainr"] == 1).astype(int)
+df["kfc"] = (df["chainr"] == 2).astype(int)
+df["roys"] = (df["chainr"] == 3).astype(int)
+df["wendys"] = (df["chainr"] == 4).astype(int)
+```
+
+Before turning to the main estimate, it is useful to verify that the reconstructed employment values look sensible.
+
+```{python}
+#| label: summary-table
+#| echo: false
+
+summary = df[["stater", "emptot", "emptot2", "demp", "gap"]].describe().round(3)
+summary
+```
+
+The reconstructed FTE employment values are in the right range. In the paper, average FTE employment before the policy change is about 20.4 in New Jersey and 23.3 in Pennsylvania. My reconstructed values line up closely with those reported summary statistics.
+
+## Replicating the Main Difference-in-Differences Result
+
+I now calculate the average employment level before and after the policy change in each state and then compute the difference-in-differences estimate.
+
+```{python}
+#| label: did-code
+
+nj = df[df["nj"] == 1]
+pa = df[df["nj"] == 0]
+
+nj_before = nj["emptot"].mean()
+nj_after = nj["emptot2"].mean()
+pa_before = pa["emptot"].mean()
+pa_after = pa["emptot2"].mean()
+
+did_all = (nj_after - nj_before) - (pa_after - pa_before)
+
+balanced = df[df["demp"].notna()].copy()
+nj_b = balanced[balanced["nj"] == 1]
+pa_b = balanced[balanced["nj"] == 0]
+
+did_bal = (nj_b["emptot2"].mean() - nj_b["emptot"].mean()) - (
+    pa_b["emptot2"].mean() - pa_b["emptot"].mean()
+)
+```
+
+```{python}
+#| label: did-results
+#| echo: false
+
+results = pd.DataFrame({
+    "Group": ["NJ", "NJ", "PA", "PA"],
+    "Period": ["Before", "After", "Before", "After"],
+    "Mean FTE": [nj_before, nj_after, pa_before, pa_after]
+}).round(3)
+
+did_table = pd.DataFrame({
+    "Estimate": ["DID (all available observations)", "DID (balanced sample)"],
+    "Value": [did_all, did_bal]
+}).round(3)
+
+results
+```
+
+```{python}
+#| label: did-table
+#| echo: false
+
+did_table
+```
+
+My replication produces a difference-in-differences estimate of about **2.754** using all available observations and about **2.750** in the balanced sample. These numbers match the paper's Table 3 result almost exactly. Card and Krueger report a DID estimate of approximately **2.76 FTE workers**.
+
+This is the key empirical result of the paper. Employment rose slightly in New Jersey, while it fell in Pennsylvania, so New Jersey's employment changed positively relative to the control group after the minimum wage increase.
+
+## Visualizing the Result
+
+The table is clear, but a graph makes the intuition even easier to see.
+
+```{python}
+#| label: did-plot
+#| echo: false
+#| fig-cap: "Average full-time-equivalent employment before and after the New Jersey minimum wage increase."
+
+plot_df = pd.DataFrame({
+    "label": ["NJ Before", "NJ After", "PA Before", "PA After"],
+    "mean_fte": [nj_before, nj_after, pa_before, pa_after]
+})
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.bar(plot_df["label"], plot_df["mean_fte"])
+ax.set_ylabel("Average FTE employment")
+ax.set_title("Employment Before and After the Minimum Wage Increase")
+plt.show()
+```
+
+The visual pattern reinforces the same message as the DID estimate. Employment rises modestly in New Jersey and falls in Pennsylvania. The paper's conclusion does not come from one unusually large number but from the comparison of these two changes.
+
+## Extension: Regression Version of the Same Result
+
+As an extension, I estimate a regression version of the same design. Card and Krueger also present reduced-form regressions in Table 4, where the dependent variable is the change in employment and the key explanatory variable is either a New Jersey dummy or a wage-gap measure.
+
+I start with the simplest version, regressing the employment change on a New Jersey indicator.
+
+```{python}
+#| label: regression-code
+
+reg_df = df[df["demp"].notna()].copy()
+
+X = sm.add_constant(reg_df["nj"])
+model = sm.OLS(reg_df["demp"], X).fit()
+
+reg_table = pd.DataFrame({
+    "Coefficient": model.params.index,
+    "Estimate": model.params.values,
+    "Std. Error": model.bse.values,
+    "t value": model.tvalues.values,
+    "p value": model.pvalues.values
+}).round(3)
+
+reg_table
+```
+
+The coefficient on the New Jersey indicator is the regression analog of the difference-in-differences comparison. In the paper's Table 4, the coefficient on the New Jersey dummy is about **2.33** in the simplest specification.
+
+I then add the basic controls used in the SAS check file: chain dummies and an ownership indicator.
+
+```{python}
+#| label: regression-controls
+
+X2 = reg_df[["nj", "bk", "kfc", "roys", "co_owned"]].copy()
+X2 = sm.add_constant(X2)
+
+model2 = sm.OLS(reg_df["demp"], X2).fit()
+
+reg_table2 = pd.DataFrame({
+    "Coefficient": model2.params.index,
+    "Estimate": model2.params.values,
+    "Std. Error": model2.bse.values,
+    "t value": model2.tvalues.values,
+    "p value": model2.pvalues.values
+}).round(3)
+
+reg_table2
+```
+
+This extension shows that the result is not just a quirk of a single hand-calculated difference. It also appears in a regression framework, which is exactly how the paper presents its reduced-form models.
+
+## Interpretation
+
+Why was this paper so influential? The answer is that the result goes against the simplest competitive-labor-market prediction. If the textbook model were the full story, a higher minimum wage should reduce employment. Instead, Card and Krueger find no evidence of a negative employment effect in this fast-food setting.
+
+That does not mean minimum wages can never reduce employment in any setting. It does mean that the effect is an empirical question, not something that can be assumed from theory alone. One of the major contributions of this paper is showing how a clean quasi-experimental comparison can challenge a strong prior belief.
+
+## Conclusion
+
+This replication successfully reproduces the core finding from Card and Krueger (1994). Using the public dataset, I obtain a difference-in-differences estimate of about **2.75 FTE workers**, which is nearly identical to the paper's reported estimate of **2.76**.
+
+I also extend the analysis by showing the result graphically and by estimating a regression version of the same design. Across all of these approaches, the conclusion is the same: in this case, the 1992 New Jersey minimum wage increase did not reduce fast-food employment relative to Pennsylvania.
+
+## References
+
+Card, David and Alan B. Krueger (1994).
+"Minimum Wages and Employment:A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania"
