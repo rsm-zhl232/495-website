@@ -18,6 +18,8 @@ website:
         text: AB test
       - href: hw2card.qmd
         text: HW2 Blog
+      - href: hw3_questions.qmd
+        text: HW3 Poisson
 
 format:
   html:
