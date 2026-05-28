@@ -20,6 +20,8 @@ website:
         text: HW2 Blog
       - href: hw3_questions.qmd
         text: HW3 Poisson
+      - href: hm4/hw4_questions.qmd
+        text: HW4 MaxDiff
 
 format:
   html:

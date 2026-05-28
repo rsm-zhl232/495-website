@@ -42,83 +42,6 @@
     "text": "The Effect of Blueprinty’s Software\nA coefficient on the log scale is hard to communicate. “Being a customer adds 0.2 to the linear index” means nothing to a marketing executive. Because the model is multiplicative in \\(\\lambda\\), the effect of being a customer is not a fixed number of patents — it depends on each firm’s age and region. The clean way to summarize it is a counterfactual comparison: take every firm exactly as it is, and ask the model what it would predict if that firm were a non-customer versus a customer.\n\ncust_idx = col_names.index(\"iscustomer\")\n\nX0 = X.copy()\nX0[:, cust_idx] = 0.0      # everyone treated as a non-customer\nX1 = X.copy()\nX1[:, cust_idx] = 1.0      # everyone treated as a customer\n\ny0 = np.exp(np.clip(X0 @ beta_hat, -30, 30))\ny1 = np.exp(np.clip(X1 @ beta_hat, -30, 30))\n\ndiff = y1 - y0\navg_effect = diff.mean()\n\neffect_table = pd.DataFrame({\n    \"Quantity\": [\n        \"Avg. predicted patents if non-customer\",\n        \"Avg. predicted patents if customer\",\n        \"Average effect of being a customer\",\n    ],\n    \"Value\": [y0.mean(), y1.mean(), avg_effect],\n})\nshow(effect_table, {\"Value\": \"{:.3f}\"},\n     \"Counterfactual effect of Blueprinty's software (patents over 5 years)\")\n\n\n\n\n\n\nTable 8: Counterfactual effect of Blueprinty's software (patents over 5 years)\n\n\n\n\n\nQuantity\nValue\n\n\n\n\nAvg. predicted patents if non-customer\n3.436\n\n\nAvg. predicted patents if customer\n4.229\n\n\nAverage effect of being a customer\n0.793\n\n\n\n\n\n\n\n\n\n\n\n\n\nFirm-by-firm difference in predicted patents (customer minus non-customer).\n\n\n\n\nAveraging the firm-level differences gives the estimated effect of being a Blueprinty customer, holding each firm’s age and region fixed at its observed values. The model predicts that, on average, a firm awards on the order of 0.4–0.8 additional patents over five years when it uses Blueprinty’s software rather than not. The per-firm histogram shows this effect is positive for essentially every firm, though its size varies because the multiplicative model produces a larger absolute boost for firms that already patent heavily.\nA careful conclusion is in order. This analysis does the one thing a raw mean comparison could not: it isolates the customer effect after accounting for the age and regional differences that made customers and non-customers non-comparable to begin with. The estimated effect is positive, statistically precise, and economically meaningful — evidence that is genuinely consistent with Blueprinty’s marketing claim.\nBut it is not proof. This is an observational study, not a randomized experiment. Firms chose whether to adopt the software, and that choice may be correlated with characteristics we never observe — managerial quality, R&D intensity, in-house legal expertise — that independently raise patent output. Controlling for age and region removes two confounders; it cannot remove the ones we cannot see. The honest summary is therefore this: the data are consistent with Blueprinty’s software helping firms win more patents, the effect survives the most obvious confounders, but a clean causal claim would require an experiment that this dataset cannot supply."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Zhuojin Li Chris",
-    "section": "",
-    "text": "Welcome to my website!\nI am a student at UC San Diego interested in data science, machine learning, causal inference, and business analytics."
-  },
-  {
-    "objectID": "index.html#research-interests",
-    "href": "index.html#research-interests",
-    "title": "Zhuojin Li Chris",
-    "section": "Research Interests",
-    "text": "Research Interests\n\nMachine Learning\nUplift Modeling\nCausal Inference\nData Analysis\nBusiness Analytics"
-  },
-  {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
-    "title": "Zhuojin Li Chris",
-    "section": "Education",
-    "text": "Education\nUniversity of California, San Diego Your degree / major here Expected graduation: 20XX"
-  },
-  {
-    "objectID": "index.html#selected-work",
-    "href": "index.html#selected-work",
-    "title": "Zhuojin Li Chris",
-    "section": "Selected Work",
-    "text": "Selected Work\nI use this site to share my academic background, project portfolio and technical work."
-  },
-  {
-    "objectID": "slides.html#current-situation",
-    "href": "slides.html#current-situation",
-    "title": "When Will China Qualify for the World Cup?",
-    "section": "Current Situation 🇨🇳",
-    "text": "Current Situation 🇨🇳\nChina has struggled to qualify for the FIFA World Cup in recent years.\n\nLast appearance: 2002 World Cup\nStrong competition in Asia (Japan, Korea, Iran)\nNeed for long-term development\n\nKey Challenges\n\nYouth training system\nCoaching quality\nInternational experience"
-  },
-  {
-    "objectID": "slides.html#future-outlook",
-    "href": "slides.html#future-outlook",
-    "title": "When Will China Qualify for the World Cup?",
-    "section": "Future Outlook 🔍",
-    "text": "Future Outlook 🔍\nChina is investing more in football development.\n\nMore youth academies\nGovernment support for sports\nIncreasing popularity of football\n\nPossible Timeline\n\nShort term (2026): Low probability\nMedium term (2030): Possible qualification\nLong term (2034+): More realistic"
-  },
-  {
-    "objectID": "slides.html#my-prediction",
-    "href": "slides.html#my-prediction",
-    "title": "When Will China Qualify for the World Cup?",
-    "section": "My Prediction 🏆",
-    "text": "My Prediction 🏆\nChina could qualify for the World Cup around 2030–2034.\nReasons\n\nImproved youth development\nMore exposure to international competition\nGradual improvement in league quality\n\nConclusion\nWith consistent effort and investment, China has the potential to return to the World Cup stage in the next decade."
-  },
-  {
-    "objectID": "resume.html",
-    "href": "resume.html",
-    "title": "Resume",
-    "section": "",
-    "text": "{{&lt; pdf files/resume.pdf width=100% height=800 &gt;}}"
-  },
-  {
-    "objectID": "hobbies.html",
-    "href": "hobbies.html",
-    "title": "Hobbies",
-    "section": "",
-    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team.\n\n\n\n\n\nGym 🏋️\nWatching sports 📺\nTraveling 🌍"
-  },
-  {
-    "objectID": "hobbies.html#soccer",
-    "href": "hobbies.html#soccer",
-    "title": "Hobbies",
-    "section": "",
-    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team."
-  },
-  {
-    "objectID": "hobbies.html#other-interests",
-    "href": "hobbies.html#other-interests",
-    "title": "Hobbies",
-    "section": "",
-    "text": "Gym 🏋️\nWatching sports 📺\nTraveling 🌍"
-  },
-  {
     "objectID": "hw2card.html",
     "href": "hw2card.html",
     "title": "Replicating Card and Krueger (1994)",
@@ -187,6 +110,146 @@
     "title": "Replicating Card and Krueger (1994)",
     "section": "References",
     "text": "References\nCard, David and Alan B. Krueger (1994). “Minimum Wages and Employment:A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania”"
+  },
+  {
+    "objectID": "hobbies.html",
+    "href": "hobbies.html",
+    "title": "Hobbies",
+    "section": "",
+    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team.\n\n\n\n\n\nGym 🏋️\nWatching sports 📺\nTraveling 🌍"
+  },
+  {
+    "objectID": "hobbies.html#soccer",
+    "href": "hobbies.html#soccer",
+    "title": "Hobbies",
+    "section": "",
+    "text": "I really enjoy playing soccer in my free time. It helps me stay active and work as part of a team."
+  },
+  {
+    "objectID": "hobbies.html#other-interests",
+    "href": "hobbies.html#other-interests",
+    "title": "Hobbies",
+    "section": "",
+    "text": "Gym 🏋️\nWatching sports 📺\nTraveling 🌍"
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
+    "section": "",
+    "text": "{{&lt; pdf files/resume.pdf width=100% height=800 &gt;}}"
+  },
+  {
+    "objectID": "slides.html#current-situation",
+    "href": "slides.html#current-situation",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "Current Situation 🇨🇳",
+    "text": "Current Situation 🇨🇳\nChina has struggled to qualify for the FIFA World Cup in recent years.\n\nLast appearance: 2002 World Cup\nStrong competition in Asia (Japan, Korea, Iran)\nNeed for long-term development\n\nKey Challenges\n\nYouth training system\nCoaching quality\nInternational experience"
+  },
+  {
+    "objectID": "slides.html#future-outlook",
+    "href": "slides.html#future-outlook",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "Future Outlook 🔍",
+    "text": "Future Outlook 🔍\nChina is investing more in football development.\n\nMore youth academies\nGovernment support for sports\nIncreasing popularity of football\n\nPossible Timeline\n\nShort term (2026): Low probability\nMedium term (2030): Possible qualification\nLong term (2034+): More realistic"
+  },
+  {
+    "objectID": "slides.html#my-prediction",
+    "href": "slides.html#my-prediction",
+    "title": "When Will China Qualify for the World Cup?",
+    "section": "My Prediction 🏆",
+    "text": "My Prediction 🏆\nChina could qualify for the World Cup around 2030–2034.\nReasons\n\nImproved youth development\nMore exposure to international competition\nGradual improvement in league quality\n\nConclusion\nWith consistent effort and investment, China has the potential to return to the World Cup stage in the next decade."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Zhuojin Li Chris",
+    "section": "",
+    "text": "Welcome to my website!\nI am a student at UC San Diego interested in data science, machine learning, causal inference, and business analytics."
+  },
+  {
+    "objectID": "index.html#research-interests",
+    "href": "index.html#research-interests",
+    "title": "Zhuojin Li Chris",
+    "section": "Research Interests",
+    "text": "Research Interests\n\nMachine Learning\nUplift Modeling\nCausal Inference\nData Analysis\nBusiness Analytics"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "Zhuojin Li Chris",
+    "section": "Education",
+    "text": "Education\nUniversity of California, San Diego Your degree / major here Expected graduation: 20XX"
+  },
+  {
+    "objectID": "index.html#selected-work",
+    "href": "index.html#selected-work",
+    "title": "Zhuojin Li Chris",
+    "section": "Selected Work",
+    "text": "Selected Work\nI use this site to share my academic background, project portfolio and technical work."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html",
+    "href": "hm4/hw4_questions.html",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "",
+    "text": "When we want to learn how much people prefer one thing over another, the natural instinct is to ask them to rate each option on a scale: “How interesting does this class sound, on a scale of 1 to 10?” The trouble is that people use rating scales very differently. One student treats a 7 as faint praise; another treats a 7 as a rave. The numbers look comparable but they aren’t.\nMaxDiff, also called Best-Worst Scaling, sidesteps the problem by replacing absolute ratings with forced trade-offs. On each screen the respondent sees a small subset of items — here four of the ten core MSBA classes at UC San Diego Rady — and is asked to pick the most preferred and the least preferred in that set. Humans are much better at making side-by-side comparisons than at calibrating an internal scale, so the resulting data carries a stronger signal about true preference. (See the week-4 MaxDiff deck for a fuller treatment.)\nThe ten items in this study are the ten core classes in the Rady MSBA program. The goal of the post is to estimate students’ relative preference for each class using three different methods and to see how much they agree:\n\nA simple counts analysis — for each class, the fraction of times it was picked best minus the fraction of times it was picked worst.\nThe multinomial logit (MNL) model fit by maximum likelihood (see week-5 conjoint/MNL deck for the derivation and the optim recipe — here we use scipy).\nThe same MNL model fit by Bayesian methods using a random-walk Metropolis–Hastings sampler (week-7 deck).\n\nWe expect all three methods to broadly agree on which classes are most and least preferred. Where they differ is in how they quantify the strength of preference and, more importantly, in how they communicate uncertainty around the estimates."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#introduction",
+    "href": "hm4/hw4_questions.html#introduction",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "",
+    "text": "When we want to learn how much people prefer one thing over another, the natural instinct is to ask them to rate each option on a scale: “How interesting does this class sound, on a scale of 1 to 10?” The trouble is that people use rating scales very differently. One student treats a 7 as faint praise; another treats a 7 as a rave. The numbers look comparable but they aren’t.\nMaxDiff, also called Best-Worst Scaling, sidesteps the problem by replacing absolute ratings with forced trade-offs. On each screen the respondent sees a small subset of items — here four of the ten core MSBA classes at UC San Diego Rady — and is asked to pick the most preferred and the least preferred in that set. Humans are much better at making side-by-side comparisons than at calibrating an internal scale, so the resulting data carries a stronger signal about true preference. (See the week-4 MaxDiff deck for a fuller treatment.)\nThe ten items in this study are the ten core classes in the Rady MSBA program. The goal of the post is to estimate students’ relative preference for each class using three different methods and to see how much they agree:\n\nA simple counts analysis — for each class, the fraction of times it was picked best minus the fraction of times it was picked worst.\nThe multinomial logit (MNL) model fit by maximum likelihood (see week-5 conjoint/MNL deck for the derivation and the optim recipe — here we use scipy).\nThe same MNL model fit by Bayesian methods using a random-walk Metropolis–Hastings sampler (week-7 deck).\n\nWe expect all three methods to broadly agree on which classes are most and least preferred. Where they differ is in how they quantify the strength of preference and, more importantly, in how they communicate uncertainty around the estimates."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#the-data",
+    "href": "hm4/hw4_questions.html#the-data",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "The Data",
+    "text": "The Data\n\n\n\n\n\n\n\nTable 1: Study dimensions\n\n\n\n\n\nQuantity\nValue\n\n\n\n\nRespondents (N)\n85\n\n\nMaxDiff tasks per respondent (T)\n8\n\n\nItems shown per task (J)\n4\n\n\nTotal items in study\n10\n\n\nTotal MaxDiff observations (N × T)\n680\n\n\n\n\n\n\n\n\nThe dataset contains 85 respondents, each of whom completed 8 MaxDiff tasks of 4 items each, for a total of 680 task observations across the ten classes.\nA sanity check confirms that every task has exactly one best, one worst, and two neither selections — so the data is well-formed (passed: True).\n\n\n\n\n\n\n\nTable 2: Number of times each class appeared across all tasks\n\n\n\n\n\nitem\nlabel\nTimes shown\n\n\n\n\n1\nMGTA 403 AI Math, Prog., & Analytics (Summer with Nijs)\n273\n\n\n2\nMGTA 464 SQL (Summer with Nijs)\n274\n\n\n3\nMGTA 451 Marketing/Finance/Operations (Summer with Wilbur/Buti/Shin)\n272\n\n\n4\nMGTA 452 Large Data (Fall with Hansen)\n276\n\n\n5\nMGTA 453 Business Analytics (Fall with August)\n270\n\n\n6\nMGTA 444 Analytics Consulting (Winter with Peterson)\n267\n\n\n7\nMGTA 455 Customer Analytics (Winter with Nijs)\n276\n\n\n8\nMGTA 454 Capstone Project (Spring with Advisor)\n272\n\n\n9\nMGTA 495 Marketing Analytics (Spring with Yavorsky)\n274\n\n\n10\nMGTA 457 Biz. Intelligence Systems (Fall with Schibler)\n266\n\n\n\n\n\n\n\n\nThe MaxDiff design is balanced: every class was shown a similar number of times across the study (272 appearances each), which is exactly what we want so that the comparison across classes is fair."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#counts-analysis",
+    "href": "hm4/hw4_questions.html#counts-analysis",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "Counts Analysis",
+    "text": "Counts Analysis\nThe simplest way to summarize MaxDiff data is to count picks. For each item \\(j\\), compute\n\\[\n\\text{score}_j \\;=\\; \\%\\text{best}_j \\;-\\; \\%\\text{worst}_j,\n\\]\nwhere the percentages are taken out of the number of times the item was shown. A score near \\(+1\\) means a class is almost always picked best when on screen; near \\(-1\\) means almost always worst; near \\(0\\) means it is middle-of-the-pack or polarizing.\n\n\n\n\n\n\n\nTable 3: Counts analysis: classes ranked by (% best − % worst)\n\n\n\n\n\nItem\nClass\nShown\n# Best\n# Worst\n% Best\n% Worst\nScore\n\n\n\n\n9\nMGTA 495 Marketing Analytics (Spring with Yavorsky)\n274\n147\n12\n53.6%\n4.4%\n+0.493\n\n\n5\nMGTA 453 Business Analytics (Fall with August)\n270\n93\n55\n34.4%\n20.4%\n+0.141\n\n\n7\nMGTA 455 Customer Analytics (Winter with Nijs)\n276\n104\n71\n37.7%\n25.7%\n+0.120\n\n\n4\nMGTA 452 Large Data (Fall with Hansen)\n276\n77\n60\n27.9%\n21.7%\n+0.062\n\n\n8\nMGTA 454 Capstone Project (Spring with Advisor)\n272\n72\n69\n26.5%\n25.4%\n+0.011\n\n\n2\nMGTA 464 SQL (Summer with Nijs)\n274\n55\n56\n20.1%\n20.4%\n-0.004\n\n\n10\nMGTA 457 Biz. Intelligence Systems (Fall with Schibler)\n266\n23\n55\n8.6%\n20.7%\n-0.120\n\n\n1\nMGTA 403 AI Math, Prog., & Analytics (Summer with Nijs)\n273\n33\n90\n12.1%\n33.0%\n-0.209\n\n\n3\nMGTA 451 Marketing/Finance/Operations (Summer with Wilbur/Buti/Shin)\n272\n43\n101\n15.8%\n37.1%\n-0.213\n\n\n6\nMGTA 444 Analytics Consulting (Winter with Peterson)\n267\n33\n111\n12.4%\n41.6%\n-0.292\n\n\n\n\n\n\n\n\n\n\n\n\n\nCounts score (% best − % worst) by class, with 95% bootstrap confidence intervals from resampling respondents.\n\n\n\n\nEven at the level of this simple count, the story is clear. MGTA 495 Marketing Analytics has by far the highest counts score: students pick it as best far more often than they pick it as worst. MGTA 455 Customer Analytics and MGTA 453 Business Analytics are also strongly liked. At the bottom, the AI math/programming refresher (MGTA 403) and the Analytics Consulting (MGTA 444) course are picked as worst much more often than as best. The 95% bootstrap intervals on the top class do not overlap with anything in the middle of the table, so its lead is statistically meaningful, not a sampling fluke."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#from-maxdiff-to-mnl-choices",
+    "href": "hm4/hw4_questions.html#from-maxdiff-to-mnl-choices",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "From MaxDiff to MNL Choices",
+    "text": "From MaxDiff to MNL Choices\nThe counts analysis throws away information. It treats a “best” pick the same regardless of what it was competing against on that screen — picking a class as best from a strong set is harder than picking it as best from a weak set. The multinomial logit (MNL) model fixes this by modelling the choice process explicitly.\nAssign each item \\(j\\) a utility coefficient \\(\\beta_j\\). On a task showing items \\(\\{a, b, c, d\\}\\), the probability that item \\(b\\) is picked best is the soft-max,\n\\[\nP(\\text{best} = b) \\;=\\; \\frac{\\exp(\\beta_b)}{\\exp(\\beta_a) + \\exp(\\beta_b) + \\exp(\\beta_c) + \\exp(\\beta_d)}.\n\\]\nThe probability that item \\(c\\) is then picked worst — from the remaining three items with utilities flipped — is\n\\[\nP(\\text{worst} = c \\mid \\text{best} = b) \\;=\\; \\frac{\\exp(-\\beta_c)}{\\exp(-\\beta_a) + \\exp(-\\beta_c) + \\exp(-\\beta_d)}.\n\\]\nEach task therefore contributes two MNL observations, a best-pick from the full set and a worst-pick from the remaining set.\nIdentifiability. The soft-max is invariant to adding a constant to every \\(\\beta\\), so only \\(J - 1 = 9\\) of the ten coefficients are identified separately. We fix \\(\\beta_1 = 0\\) (the AI math course is the reference) and estimate \\(\\beta_2, \\dots, \\beta_{10}\\). All preferences are read relative to this baseline."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#mnl-via-maximum-likelihood",
+    "href": "hm4/hw4_questions.html#mnl-via-maximum-likelihood",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "MNL via Maximum Likelihood",
+    "text": "MNL via Maximum Likelihood\nThe full log-likelihood, summed over the 680 tasks, is\n\\[\n\\ell(\\boldsymbol{\\beta}) \\;=\\; \\sum_{\\text{tasks}} \\Big[\\, \\beta_{j^*_b} \\;-\\; \\log \\!\\!\\!\\sum_{j \\in \\text{shown}}\\!\\!\\! \\exp(\\beta_j) \\;-\\; \\beta_{j^*_w} \\;-\\; \\log \\!\\!\\!\\!\\!\\sum_{j \\in \\text{shown} \\setminus \\{j^*_b\\}}\\!\\!\\!\\! \\exp(-\\beta_j) \\,\\Big],\n\\]\nwhere \\(j^*_b\\) and \\(j^*_w\\) are the items picked best and worst on that task. The log-sum-exp form keeps the numerics stable.\n\n\n\n\n\n\n\nTable 4: Maximum-likelihood estimates of the MNL coefficients and implied shares of preference. β₁ is pinned to 0 as the reference (MGTA 403).\n\n\n\n\n\nRank\nItem\nClass\nβ̂\nSE(β̂)\nShare\n\n\n\n\n1\n9\nMGTA 495 Marketing Analytics (Spring with Yavorsky)\n+1.630\n0.195\n28.4%\n\n\n2\n5\nMGTA 453 Business Analytics (Fall with August)\n+0.744\n0.222\n11.7%\n\n\n3\n7\nMGTA 455 Customer Analytics (Winter with Nijs)\n+0.656\n0.231\n10.7%\n\n\n4\n4\nMGTA 452 Large Data (Fall with Hansen)\n+0.555\n0.217\n9.7%\n\n\n5\n8\nMGTA 454 Capstone Project (Spring with Advisor)\n+0.443\n0.183\n8.7%\n\n\n6\n2\nMGTA 464 SQL (Summer with Nijs)\n+0.438\n0.182\n8.6%\n\n\n7\n10\nMGTA 457 Biz. Intelligence Systems (Fall with Schibler)\n+0.236\n0.180\n7.0%\n\n\n8\n1\nMGTA 403 AI Math, Prog., & Analytics (Summer with Nijs)\n+0.000\n0.000\n5.6%\n\n\n9\n3\nMGTA 451 Marketing/Finance/Operations (Summer with Wilbur/Buti/Shin)\n-0.067\n0.178\n5.2%\n\n\n10\n6\nMGTA 444 Analytics Consulting (Winter with Peterson)\n-0.239\n0.162\n4.4%\n\n\n\n\n\n\n\n\nThe standard errors come from the inverse of the negative Hessian returned by scipy.optimize.minimize. To turn the raw \\(\\hat\\beta\\)’s into something interpretable, we convert them to shares of preference via the soft-max,\n\\[\n\\hat s_j \\;=\\; \\frac{\\exp(\\hat\\beta_j)}{\\sum_{k=1}^{10} \\exp(\\hat\\beta_k)},\n\\]\nwhich sum to one and answer the natural question: “if all ten classes were on one screen, what fraction of best-picks would each one get?”\n\n\n\n\n\nMLE estimated share of preference for each class, sorted from highest to lowest.\n\n\n\n\nThe MNL ranking confirms what the counts already suggested: MGTA 495 Marketing Analytics dominates with an estimated share of about 28% of all best-picks if the entire ten-class set were placed on a single screen. MGTA 455 Customer Analytics and MGTA 453 Business Analytics are clear runners-up. The bottom three — MGTA 444 Analytics Consulting, the AI math/programming refresher, and MGTA 451 Marketing / Finance / Operations — sit well below the others. The order is essentially identical to the counts ranking, which is reassuring: the MNL is doing more work statistically, but on data this clean it lands in the same place."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#mnl-via-bayesian-estimation",
+    "href": "hm4/hw4_questions.html#mnl-via-bayesian-estimation",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "MNL via Bayesian Estimation",
+    "text": "MNL via Bayesian Estimation\nThe Bayesian recipe is the same likelihood, only now with a prior on the coefficients:\n\\[\n\\pi(\\boldsymbol{\\beta} \\mid \\boldsymbol{y}) \\;\\propto\\; L(\\boldsymbol{\\beta}) \\cdot \\pi(\\boldsymbol{\\beta}).\n\\]\nA weakly informative prior \\(\\boldsymbol{\\beta} \\sim N(\\mathbf{0},\\,\n10 \\cdot I)\\) — a standard deviation of about \\(\\sqrt{10} \\approx 3.2\\) on every coefficient — leaves the data to do almost all of the talking while ruling out absurd values.\nWe sample from the posterior with a random-walk Metropolis-Hastings sampler. Starting from the MLE, we propose \\(\\boldsymbol{\\beta}^\\ast = \\boldsymbol{\\beta} + \\boldsymbol{\\epsilon}\\) with \\(\\boldsymbol{\\epsilon} \\sim N(\\mathbf{0}, s^2 I)\\), accept with probability \\(\\min\\{1, \\, \\pi(\\boldsymbol{\\beta}^\\ast)/\\pi(\\boldsymbol{\\beta})\\}\\), and tune the step size \\(s\\) to land at an acceptance rate of roughly 25–40 % (see the week-7 “Tuning the Step Size” slide).\nThe chain was run for 30,000 iterations with a step size of 0.10, discarding the first 7,500 as burn-in. The acceptance rate was 19.4%, comfortably inside the recommended band.\n\n\n\n\n\nTrace plots for the post-burn-in MCMC chain on three representative coefficients. The ‘fuzzy caterpillar’ pattern indicates good mixing.\n\n\n\n\nThe traces look like the canonical “fuzzy caterpillar”: the chain is moving around freely and revisiting the same range repeatedly, not slowly drifting in one direction. That is what we want to see.\n\n\n\n\n\n\n\nTable 5: Posterior summaries for each class: posterior mean β, 95% credible interval on β, and the posterior of the implied share of preference.\n\n\n\n\n\nRank\nItem\nClass\nβ̄\nβ 2.5%\nβ 97.5%\nShare\nShare 2.5%\nShare 97.5%\n\n\n\n\n1\n9\nMGTA 495 Marketing Analytics (Spring with Yavorsky)\n+1.634\n+1.350\n+1.932\n28.5%\n24.4%\n33.1%\n\n\n2\n5\nMGTA 453 Business Analytics (Fall with August)\n+0.742\n+0.463\n+1.025\n11.7%\n9.6%\n14.1%\n\n\n3\n7\nMGTA 455 Customer Analytics (Winter with Nijs)\n+0.653\n+0.369\n+0.939\n10.7%\n8.8%\n12.9%\n\n\n4\n4\nMGTA 452 Large Data (Fall with Hansen)\n+0.555\n+0.293\n+0.830\n9.7%\n8.0%\n11.6%\n\n\n5\n8\nMGTA 454 Capstone Project (Spring with Advisor)\n+0.439\n+0.187\n+0.710\n8.6%\n7.1%\n10.4%\n\n\n6\n2\nMGTA 464 SQL (Summer with Nijs)\n+0.426\n+0.159\n+0.686\n8.5%\n7.0%\n10.3%\n\n\n7\n10\nMGTA 457 Biz. Intelligence Systems (Fall with Schibler)\n+0.235\n-0.030\n+0.502\n7.0%\n5.8%\n8.5%\n\n\n8\n1\nMGTA 403 AI Math, Prog., & Analytics (Summer with Nijs)\n+0.000\n+0.000\n+0.000\n5.6%\n4.5%\n6.7%\n\n\n9\n3\nMGTA 451 Marketing/Finance/Operations (Summer with Wilbur/Buti/Shin)\n-0.067\n-0.335\n+0.214\n5.2%\n4.3%\n6.3%\n\n\n10\n6\nMGTA 444 Analytics Consulting (Winter with Peterson)\n-0.238\n-0.498\n+0.036\n4.4%\n3.6%\n5.3%\n\n\n\n\n\n\n\n\n\n\n\n\n\nPosterior mean share of preference per class, with 95% credible intervals computed from the MCMC draws.\n\n\n\n\nThe Bayesian estimates land essentially on top of the MLEs: the posterior mean of each \\(\\beta\\) is within a few hundredths of the MLE point estimate, and the posterior standard deviations match the classical standard errors. That is exactly what one should expect under a diffuse prior and a large enough sample — the likelihood dominates the posterior. What the Bayesian fit gives us for free, however, is a proper credible interval on the share of preference: we just push every MCMC draw through the soft-max and take quantiles. Obtaining the same intervals from the MLE would require the delta method."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#comparing-the-three-methods",
+    "href": "hm4/hw4_questions.html#comparing-the-three-methods",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "Comparing the Three Methods",
+    "text": "Comparing the Three Methods\n\n\n\n\n\n\n\nTable 6: All three methods side-by-side, sorted by MLE rank.\n\n\n\n\n\nItem\nClass\nCounts score\nCounts rank\nMLE share\nMLE rank\nBayes share\nBayes rank\n\n\n\n\n9\nMGTA 495 Marketing Analytics (Spring with Yavorsky)\n+0.493\n1\n28.4%\n1\n28.5%\n1\n\n\n5\nMGTA 453 Business Analytics (Fall with August)\n+0.141\n2\n11.7%\n2\n11.7%\n2\n\n\n7\nMGTA 455 Customer Analytics (Winter with Nijs)\n+0.120\n3\n10.7%\n3\n10.7%\n3\n\n\n4\nMGTA 452 Large Data (Fall with Hansen)\n+0.062\n4\n9.7%\n4\n9.7%\n4\n\n\n8\nMGTA 454 Capstone Project (Spring with Advisor)\n+0.011\n5\n8.7%\n5\n8.6%\n5\n\n\n2\nMGTA 464 SQL (Summer with Nijs)\n-0.004\n6\n8.6%\n6\n8.5%\n6\n\n\n10\nMGTA 457 Biz. Intelligence Systems (Fall with Schibler)\n-0.120\n7\n7.0%\n7\n7.0%\n7\n\n\n1\nMGTA 403 AI Math, Prog., & Analytics (Summer with Nijs)\n-0.209\n8\n5.6%\n8\n5.6%\n8\n\n\n3\nMGTA 451 Marketing/Finance/Operations (Summer with Wilbur/Buti/Shin)\n-0.213\n9\n5.2%\n9\n5.2%\n9\n\n\n6\nMGTA 444 Analytics Consulting (Winter with Peterson)\n-0.292\n10\n4.4%\n10\n4.4%\n10\n\n\n\n\n\n\n\n\n\n\n\n\n\nSide-by-side comparison of the three methods. Each panel sorts the ten classes by that method’s score; bar colours are tied to the class so the same class can be traced across panels.\n\n\n\n\nThe three methods agree completely on the top three and the bottom three. Where they shuffle slightly is in the middle of the pack, where classes have similar utilities and small amounts of sampling noise can swap adjacent positions. This is exactly the regime in which the Bayesian credible interval is most useful: it tells you which of the middle-ranked classes are meaningfully different from one another and which are essentially tied.\nWhat does the MNL add over the counts analysis? The counts treat every best-pick as equally informative, regardless of which items it competed against. The MNL uses the full design — every item that was shown but not picked also contributes information, because it was offered and rejected. That extra information is what lets the model produce interpretable shares of preference instead of just a bounded score.\nWhat does the Bayesian fit add over the MLE? Two things. First, an honest distribution over the derived quantities of interest. Shares of preference, “what fraction of students would choose each class on a single screen”, or pairwise win probabilities are nonlinear functions of the \\(\\beta\\)’s, and quantifying their uncertainty from the MLE requires the delta method or a parametric bootstrap. With MCMC every draw gives you the derived quantity directly. Second, the framework generalises gracefully — a hierarchical MNL with individual-level coefficients is a small change to the same sampler and lets you measure how preferences vary between students."
+  },
+  {
+    "objectID": "hm4/hw4_questions.html#discussion",
+    "href": "hm4/hw4_questions.html#discussion",
+    "title": "MaxDiff Analysis of MSBA Class Preferences",
+    "section": "Discussion",
+    "text": "Discussion\nReading these results as a prospective MSBA student rather than as a modeller: MGTA 495 Marketing Analytics is the clear favourite among the survey respondents. MGTA 455 Customer Analytics and MGTA 453 Business Analytics form a strong second tier. The Capstone and SQL classes sit in the middle — useful courses that no one rates as their absolute favourite but that few rate as their least favourite either. At the bottom are the AI math/programming refresher and the Analytics Consulting course, both picked as worst much more often than as best.\nA methodological summary in three lines:\n\nThe counts analysis is the right tool for an executive dashboard — it is transparent, requires no model, and lands on the same broad ranking that the more sophisticated methods produce.\nMaximum-likelihood MNL gives the same ranking but adds principled standard errors and lets you compute shares of preference. It is the default workhorse when you want a single number to report with a classical error bar.\nBayesian MNL wins when you need uncertainty on derived quantities (shares, market simulations, “what if we added an eleventh class?” scenarios) or when you want to extend the model hierarchically to estimate preferences at the individual level rather than only on average.\n\nA few caveats are worth flagging. The respondents are a self-selected sample of MSBA students — preferences here may not generalise to other analytics programs, or even to future cohorts at Rady. Each respondent saw eight tasks of four items, which gives a clean aggregate picture but is too thin to estimate stable preferences for any individual student. Finally, students’ preferences are partly shaped by their prior coursework and by where they currently are in the program — an obvious next step would be to fit a hierarchical MNL with a student-level effect, or to interact the \\(\\beta\\)’s with covariates such as concentration or work experience to see whether different segments of students prefer different sets of classes."
   },
   {
     "objectID": "abtest.html",
